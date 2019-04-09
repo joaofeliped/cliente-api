@@ -1,0 +1,8 @@
+CREATE TABLE telefone (
+	codigo BIGINT(20) PRIMARY KEY AUTO_INCREMENT,
+	tipo VARCHAR(20) NOT NULL,
+	numero BIGINT(13) NOT NULL,
+	codigo_cliente BIGINT(20) NOT NULL,
+	FOREIGN KEY (codigo_cliente) REFERENCES cliente(codigo)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;		
+
