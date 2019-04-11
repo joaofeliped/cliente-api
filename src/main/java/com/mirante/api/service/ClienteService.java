@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ public class ClienteService {
 	 * @param cliente
 	 */
 	@Transactional
-	public void salvar(Cliente cliente) {
+	public Cliente salvar(Cliente cliente) {
 		validarNome(cliente);
 		
 		removerMascaraCpf(cliente);
@@ -71,17 +72,23 @@ public class ClienteService {
 		
 		this.telefoneService.salvar(telefones);
 		this.emailService.salvar(emails);
+		
+		return clienteSalvo;
 	}
 	
 	/**
 	 * Método para atualizar cliente.
+	 * @param codigo 
 	 * 
 	 * @param cliente
 	 */
 	@Transactional
-	public void atualizar(Cliente cliente) {
-		// TODO Auto-generated method stub
+	public Cliente atualizar(Long codigo, Cliente cliente) {
+		Cliente clienteCadastrado = buscarPorCodigo(codigo);
 		
+		BeanUtils.copyProperties(cliente, clienteCadastrado, "codigo");
+		
+		return this.salvar(clienteCadastrado);
 	}
 	
 	/**

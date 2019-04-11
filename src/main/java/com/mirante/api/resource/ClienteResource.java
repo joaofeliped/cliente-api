@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mirante.api.exceptionhandler.ClienteExceptionHandler.Erro;
 import com.mirante.api.model.Cliente;
+import com.mirante.api.model.TipoTelefone;
 import com.mirante.api.model.exception.CaractereInvalidoException;
 import com.mirante.api.service.ClienteService;
 
@@ -55,9 +56,9 @@ public class ClienteResource {
 	@PostMapping
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CLIENTE') and #oauth2.hasScope('write')")
 	public ResponseEntity<?> salvar(@Valid @RequestBody Cliente cliente) {
-		this.clienteService.salvar(cliente);
+		Cliente clienteSalvo = this.clienteService.salvar(cliente);
 		
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+		return ResponseEntity.status(HttpStatus.CREATED).body(clienteSalvo);
 	}
 	
 
@@ -77,9 +78,9 @@ public class ClienteResource {
 			return ResponseEntity.notFound().build();
 		}
 		
-		this.clienteService.atualizar(cliente);
+		Cliente clienteAtualizado = this.clienteService.atualizar(codigo, cliente);
 		
-		return ResponseEntity.ok().build();
+		return ResponseEntity.ok().body(clienteAtualizado);
 	}
 	
 	/**
@@ -131,6 +132,17 @@ public class ClienteResource {
 		List<Cliente> clientes = this.clienteService.buscarTodos();
 		
 		return ResponseEntity.ok(clientes);
+	}
+	
+	/**
+	 * Retorna a lista de tipos de telefones.
+	 * 
+	 * @return ResponseEntity<List<TipoTelefone>>
+	 */
+	@GetMapping("/tipos-telefone")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CLIENTE') and #oauth2.hasScope('read')")
+	public ResponseEntity<List<TipoTelefone>> buscarTiposTelefones() {
+		return ResponseEntity.ok(Arrays.asList(TipoTelefone.values()));
 	}
 	
 	@ExceptionHandler({CaractereInvalidoException.class})

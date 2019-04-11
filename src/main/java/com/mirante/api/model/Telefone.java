@@ -48,7 +48,7 @@ public class Telefone {
 	 * Número do telefone.
 	 */
 	@NotNull
-	private Long numero;
+	private String numero;
 	
 	/**
 	 * Cliente do telefone.
