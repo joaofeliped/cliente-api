@@ -5,6 +5,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -71,6 +73,17 @@ public class ClienteService {
 		
 		this.telefoneService.salvar(telefones);
 		this.emailService.salvar(emails);
+	}
+	
+	/**
+	 * Método para atualizar cliente.
+	 * 
+	 * @param cliente
+	 */
+	@Transactional
+	public void atualizar(Cliente cliente) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	/**

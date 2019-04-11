@@ -2,6 +2,7 @@ package com.mirante.api.resource;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import javax.validation.Valid;
 
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,6 +60,28 @@ public class ClienteResource {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 	
+
+	/**
+	 * Edita um cliente.
+	 * 
+	 * @param codigo
+	 * @param cliente
+	 * @return ResponseEntity<?>
+	 */
+	@PutMapping("/{codigo}")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CLIENTE') and #oauth2.hasScope('write')")
+	public ResponseEntity<?> editar(@PathVariable("codigo") Long codigo, @Valid @RequestBody Cliente cliente) {
+		Cliente clienteCadastrado = this.clienteService.buscarPorCodigo(codigo);
+		
+		if(Objects.isNull(clienteCadastrado)) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		this.clienteService.atualizar(cliente);
+		
+		return ResponseEntity.ok().build();
+	}
+	
 	/**
 	 * Deleta um cliente.
 	 * 
@@ -67,6 +91,12 @@ public class ClienteResource {
 	@DeleteMapping("/{codigo}")
 	@PreAuthorize("hasAuthority('ROLE_REMOVER_CLIENTE') and #oauth2.hasScope('write')")
 	public ResponseEntity<?> deletar(@PathVariable("codigo") Long codigo) {
+		Cliente cliente = this.clienteService.buscarPorCodigo(codigo);
+		
+		if(Objects.isNull(cliente)) {
+			return ResponseEntity.notFound().build();
+		}
+		
 		this.clienteService.deletar(codigo);
 		
 		return ResponseEntity.noContent().build();
@@ -82,6 +112,10 @@ public class ClienteResource {
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CLIENTE') and #oauth2.hasScope('read')")
 	public ResponseEntity<?> buscarPorCodigo(@PathVariable("codigo") Long codigo) {
 		Cliente cliente = this.clienteService.buscarPorCodigo(codigo);
+		
+		if(Objects.isNull(cliente)) {
+			return ResponseEntity.notFound().build();
+		}
 		
 		return ResponseEntity.ok(cliente);
 	}
